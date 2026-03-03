@@ -1,10 +1,14 @@
 import streamlit as st
 import random
-import pandas as pd
 
-st.title("Generador Equipos Fútbol 5")
+st.set_page_config(page_title="Equipos Fútbol 5", layout="centered")
 
-# Base de jugadores
+st.title("⚽ Generador Equipos Fútbol 5")
+
+# -------------------------
+# BASE DE JUGADORES
+# -------------------------
+
 players = {
     "JC": {"edad": 40, "talento": 4, "fisico": 4, "velocidad": 3},
     "Pantera": {"edad": 55, "talento": 3, "fisico": 2, "velocidad": 3},
@@ -19,6 +23,10 @@ players = {
     "Lucho": {"edad": 50, "talento": 3, "fisico": 3, "velocidad": 3},
     "Chalela": {"edad": 55, "talento": 3, "fisico": 3, "velocidad": 3},
 }
+
+# -------------------------
+# FUNCIONES
+# -------------------------
 
 def age_adjustment(age):
     if 36 <= age <= 42:
@@ -37,37 +45,51 @@ def calculate_ir(data):
     )
     return base * age_adjustment(data["edad"])
 
-confirmed_input = st.text_input(
-    "Escribe los confirmados separados por coma:"
+# -------------------------
+# DROPDOWN MULTISELECT
+# -------------------------
+
+confirmed_players = st.multiselect(
+    "Selecciona los 12 jugadores confirmados:",
+    list(players.keys())
 )
 
+st.write(f"Jugadores seleccionados: {len(confirmed_players)} / 12")
+
+# -------------------------
+# GENERAR EQUIPOS
+# -------------------------
+
 if st.button("Generar Equipos"):
-    confirmed = [name.strip() for name in confirmed_input.split(",")]
 
-    valid_players = []
-    for name in confirmed:
-        if name in players:
-            ir = calculate_ir(players[name])
-            valid_players.append((name, ir))
-
-    if len(valid_players) != 12:
-        st.warning("Debe haber exactamente 12 jugadores confirmados.")
+    if len(confirmed_players) != 12:
+        st.error("⚠️ Debes seleccionar exactamente 12 jugadores.")
     else:
-        # Ordenar por IR
-        valid_players.sort(key=lambda x: x[1], reverse=True)
 
+        # Calcular IR
+        player_list = []
+        for name in confirmed_players:
+            ir = calculate_ir(players[name])
+            player_list.append((name, ir))
+
+        # Ordenar por IR
+        player_list.sort(key=lambda x: x[1], reverse=True)
+
+        # Distribución serpiente
         teams = {"Equipo A": [], "Equipo B": [], "Equipo C": []}
         order = ["Equipo A","Equipo B","Equipo C",
                  "Equipo C","Equipo B","Equipo A",
                  "Equipo A","Equipo B","Equipo C",
                  "Equipo C","Equipo B","Equipo A"]
 
-        for i, player in enumerate(valid_players):
+        for i, player in enumerate(player_list):
             teams[order[i]].append(player)
 
+        # Mostrar resultados
         for team, members in teams.items():
             avg = sum(p[1] for p in members) / 4
             st.subheader(team)
             for p in members:
                 st.write(f"{p[0]} (IR {round(p[1],2)})")
             st.write(f"Promedio IR: {round(avg,2)}")
+            st.markdown("---")
