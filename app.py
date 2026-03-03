@@ -15,7 +15,7 @@ if "players" not in st.session_state:
         "Gabo Rodriguez": {"edad": 43, "talento": 4, "fisico": 5, "velocidad": 3},
         "Cheque": {"edad": 44, "talento": 5, "fisico": 3, "velocidad": 3},
         "Pipe Sandoval": {"edad": 39, "talento": 4, "fisico": 4, "velocidad": 3},
-        "Alfredo": {"edad": 47, "talento": 2, "fisico": 3, "velocidad": 3},
+        "Alfredo": {"edad": 47, "talento": 3, "fisico": 3, "velocidad": 3},
         "Pantera": {"edad": 55, "talento": 3, "fisico": 2, "velocidad": 3},
         "Guillo": {"edad": 50, "talento": 4, "fisico": 4, "velocidad": 3},
         "Nicola": {"edad": 50, "talento": 3, "fisico": 4, "velocidad": 3},
